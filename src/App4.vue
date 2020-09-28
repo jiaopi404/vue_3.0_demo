@@ -3,6 +3,7 @@
     <h2>这个演示 popup menu</h2>
     <br />
     <popup-menu
+      ref="popper"
       v-if="popupConfig.isShow"
       :left="popupConfig.left"
       :top="popupConfig.top"
@@ -25,14 +26,15 @@
  * TODO: 做一个 popup 组件
  */
 import PopupMenu from './components/popup-menu.vue'
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 export default {
   name: 'App4',
   components: {
     PopupMenu
   },
   setup () {
-    const { popupConfig, handleAppContextMenu, handleHidePopupMenu } = useShowContextMenu()
+    const { popper } = useTestGetSubCompPopupMenu()
+    const { popupConfig, handleAppContextMenu, handleHidePopupMenu } = useShowContextMenu(popper)
     const { contextMenu, handleMenuItemClick } = useContextMenuContent()
 
     return {
@@ -40,12 +42,13 @@ export default {
       contextMenu,
       handleAppContextMenu,
       handleMenuItemClick,
-      handleHidePopupMenu
+      handleHidePopupMenu,
+      popper
     }
   }
 }
 
-function useShowContextMenu () {
+function useShowContextMenu (popper) {
   const popupConfig = reactive({
     isShow: false,
     left: 0,
@@ -65,6 +68,8 @@ function useShowContextMenu () {
   }
 
   function handleHidePopupMenu () {
+    console.log('popper is: ', popper.value) // 在此可以拿到子组件
+    // debugger
     popupConfig.isShow = false
   }
 
@@ -90,6 +95,14 @@ function useContextMenuContent () {
   return {
     contextMenu,
     handleMenuItemClick
+  }
+}
+
+function useTestGetSubCompPopupMenu () {
+  const popper = ref(null)
+
+  return {
+    popper
   }
 }
 </script>
